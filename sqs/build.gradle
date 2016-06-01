@@ -1,0 +1,70 @@
+import groovy.util.AntBuilder
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: "com.github.johnrengelman.shadow"
+
+repositories {
+   mavenLocal()
+   maven {
+      url 'http://download.osgeo.org/webdav/geotools'
+   }
+   maven {
+      url 'http://repo.boundlessgeo.com/main'
+   }
+   mavenCentral()
+}
+
+buildscript {
+   repositories {
+      jcenter()
+      maven {
+         name 'Shadow'
+         url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
+      }
+   }
+   dependencies {
+      classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
+   }
+}
+
+sourceCompatibility = 1.7
+
+install {
+   repositories.mavenInstaller {
+      pom.groupId = "org.ossim"
+      // only necessary if artifact ID diverges from project name
+      // the latter defaults to project directory name and can be
+      // configured in settings.gradle
+      // shouldn't be needed as this is the default anyway
+      pom.packaging = 'jar'
+   }
+}
+
+dependencies {
+   compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
+   compile 'com.amazonaws:aws-java-sdk:1.10.66'
+   compile "commons-codec:commons-codec:1.10"
+   compile "org.slf4j:slf4j-api:1.7.21"
+   compile "org.slf4j:log4j-over-slf4j:1.7.21"
+   compile "org.springframework:spring-context:4.2.6.RELEASE"
+   testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+jar{
+   baseName = "ossim-sqs"
+}
+install {
+   repositories.mavenInstaller {
+      pom.artifactId = 'ossim-sqs'
+   }
+}
+shadowJar {
+   zip64 true
+   mergeGroovyExtensionModules()
+   mergeServiceFiles( 'META-INF/spring.schema' )
+   mergeServiceFiles( 'META-INF/spring.handlers' )
+}
+
