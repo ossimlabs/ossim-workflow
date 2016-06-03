@@ -16,4 +16,3 @@ spring:
         template:
             check-template-location: false
 aws:
-  sqsUrl: ""
