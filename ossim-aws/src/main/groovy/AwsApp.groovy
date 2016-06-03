@@ -20,12 +20,12 @@ class AwsApp
 
       def options = cli.parse(args)
       if (!options) {
-         println cli.usage()
-         return
+        println cli.usage()
+        return
       }
       if(options.help)
       {
-        log.info cli.usage()
+        println cli.usage()
         return
       }
       if(options."send-message")
