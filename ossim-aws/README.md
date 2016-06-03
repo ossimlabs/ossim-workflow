@@ -5,6 +5,7 @@ The command line application is used as a way to test the AWS interface.  Curren
 ##Dependencies
 
 * Java 7 preferrably 8.
+* Build of the [sqs](../sqs) library
 * AWS credentials stored in the your home location: Unix is **~/.aws/credentials** with contents defining your access keys
 
  ```
@@ -20,7 +21,7 @@ aws_secret_access_key=
  source "$HOME/.sdkman/bin/sdkman-init.sh"
  sdk version
  ``` 
- * Note: We will use a build mechanism that does not require you to download and install the grails and groovy systems but they are nice to have:
+ * Install libraries used for building:
 
  ```
  sdk install grails 3.0.17
