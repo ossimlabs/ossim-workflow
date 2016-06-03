@@ -14,6 +14,8 @@ import com.amazonaws.services.sqs.model.DeleteQueueRequest;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
+import com.amazonaws.services.sqs.model.SendMessageBatchRequest;
+import com.amazonaws.services.sqs.model.SendMessageBatchRequestEntry
 import com.amazonaws.services.sqs.model.ChangeMessageVisibilityRequest
 import org.apache.commons.codec.digest.DigestUtils
 import groovy.util.logging.Slf4j
@@ -34,19 +36,22 @@ class Message
      md5Check == messageBodyMd5
 
    }
-   void send(String queue, String messageBody)
+   void send(String queue, String messageBody) throws Exception
    {
-      try{
-         sqs.sendMessage(new SendMessageRequest()
-            .withQueueUrl(queue)
-            .withMessageBody(messageBody)
-          )
+      sqs.sendMessage(new SendMessageRequest()
+         .withQueueUrl(queue)
+         .withMessageBody(messageBody)
+       )
+   }
+   void send(String queue, List<String> messages) throws Exception
+   {
+      def entryList = []
+      Integer id = 1
+      messages.each{message->
+         entryList << new SendMessageBatchRequestEntry(id.toString(), message)
+         ++id
       }
-      catch(e)
-      {
-         log.error("ERROR: Unable to send to queue ${queue}")
-         log.error("ERROR: ${e.toString()}")
-      }
+      sqs.sendMessageBatch(queue, entryList as List<SendMessageBatchRequestEntry>)
    }
 
    def receive(String queue)
