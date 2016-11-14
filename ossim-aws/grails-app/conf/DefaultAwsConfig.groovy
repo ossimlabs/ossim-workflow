@@ -1,3 +1,3 @@
-Aws{
+aws{
    sqsUrl = ""
 }
